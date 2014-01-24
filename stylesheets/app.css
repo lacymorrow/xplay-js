@@ -1,0 +1,60 @@
+/* Artfully masterminded by ZURB  */
+
+/* -------------------------------------------------- 
+   Table of Contents
+-----------------------------------------------------
+*/
+
+.tiny{
+  font-size:12px;
+}
+#playjs-image,
+#playjs-player,#playjs-image img{
+	width:300px;
+	margin: 0 auto;
+}
+#playjs-playlist{
+  margin-bottom: 100px;
+}
+#wrapper-info{
+  text-align: right;
+}
+audio,video{
+  width: 300px;
+  margin: 0 auto;
+}
+.clear{
+  padding: 0;
+  margin: 0;
+  height: 0px;
+}
+.underline{
+  text-decoration: underline;
+}
+.red{
+  color: #ff0000
+}
+.green{
+  color: #83C441;
+}
+.bottom-border{
+  border-bottom: 1px solid #DDD;
+}
+/* -----------------------------------------
+   Shared Styles
+----------------------------------------- */
+
+
+
+/* -----------------------------------------
+   Page Name 1
+----------------------------------------- */
+
+
+
+
+/* -----------------------------------------
+   Page Name 2
+----------------------------------------- */
+
+
