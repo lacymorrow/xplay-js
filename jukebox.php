@@ -12,7 +12,7 @@
 */
 
 ########################
-# play.js
+# playlister.php
 # Lacy Morrow 2012
 # www.lacymorrow.com
 # getID3 - HTML5BoilerPlate - MediaElement.js
@@ -21,9 +21,6 @@
 ####################
 ###   SETTINGS   ###
 ####################
-
-# GENERATE Play.js
-$play = true;
 
 # USE ID3 TAGS TO AUTOMATICALLY FILL TRACK INFORMATION
 # (as opposed to specifying in the directory structure, e.g. 'media/artist/album/track.mp3')
@@ -40,35 +37,6 @@ $artwork = true;
 
 # MEDIA DIRECTORY - path/url - relative
 $media = 'media';
-
-#############################
-###   ADVANCED SETTINGS   ###
-#############################
-$settings = array();
-
-# PLAYER WIDTH
-$settings['width'] = 300;
-$settings['height'] = 225;
-$settings['alphabetize'] = true; // FIX
-$settings['autoplay'] = true; // FIX
-$settings['autoresume'] = true; // FIX
-
-
-# PLAYLIST FORMAT - string
-# %c% - creator
-# %a% - album
-# %t% - title
-# %o% - annotation
-# %i% - info
-# %f% - filename
-# %n% - track number
-# %N% - track number w/ leading zero
-$settings['format'] = '%t%';
-
-# SWF FALLBACK URL
-//$swfurl = 'xspf_jukebox.swf';
-
-
 
 #####################################
 ###  DO NOT EDIT BELOW THIS LINE  ###
@@ -105,12 +73,9 @@ else {
 		fclose($fh);
 	}
 }
-if($play == true){
-	(!isset($trackArr)) ? generateJS($playFile,$settings) : generateJS($playFile, $settings, $trackArr);
-} else {
-	// Output Playlist
-	echo $playFile;
-}
+// Output Playlist
+echo $playFile;
+
 
 #####################################
 ###    END PLAYLIST GENERATION    ###
@@ -120,82 +85,7 @@ if($play == true){
 #####################################
 ###           FUNCTIONS           ###
 #####################################
-#####################################
-/* 
- * generateJS
- * generates the play-js controls
- */
-#####################################
-function generateJS($playFile,$settings,$trackArr = null){
-	//!!!WHAT IF LOADING FROM CACHE - NO TRACKARR
-	$out = '';
-	foreach($trackArr as $trackVal){
-		$f = $settings['format'];
-		$f = str_replace('%c%',$trackVal['creator'],$f);
-		$f = str_replace('%a%',$trackVal['album'],$f);
-		$f = str_replace('%t%',$trackVal['title'],$f);
-		$f = str_replace('%o%',$trackVal['annotation'],$f);
-		$f = str_replace('%i%',$trackVal['info'],$f);
-		$f = str_replace('%f%',$trackVal['location'],$f);
-		$f = str_replace('%n%',($i+1),$f);
-		$f = str_replace('%N%',str_pad(($i+1),2,"0",STR_PAD_LEFT),$f);
-		$out .= '<li><a href="#" onclick="return false;" rel="';
-		$out .= $trackVal['creator'].'|';
-		$out .= $trackVal['album'].'|';
-		$out .= $trackVal['title'].'|';
-		$out .= $trackVal['annotation'].'|';
-		$out .= $trackVal['info'].'|';
-		$out .= $trackVal['duration'].'|';
-		$out .= $trackVal['image'].'|';
-		$out .= $trackVal['type'].'|';
-		foreach($trackVal['location'] as $l){
-			$out .= $trackVal['path'].'/'.$l.'|';
-		}
-		$out .= '">'.$f.'</a></li>';
-	}
-	$out .= '<li id="playjs-reset"><a href="#" onclick="return false;">Reset</a></li>';
-	$js = 'jQuery(function() { '.PHP_EOL;
-	$js .= 'jQuery(\'#playjs-playlist\').html(\''.$out.'\');'.PHP_EOL;
-	$js .= 'jQuery("[id^=playjs]").each(function(){'.PHP_EOL;
-	$js .= 'if(jQuery(this).html()){'.PHP_EOL;
-	$js .= 'jQuery(this).attr("rel",jQuery(this).html());'.PHP_EOL;
-	$js .= '}});'.PHP_EOL;
-	$js .= 'jQuery(document).delegate("#playjs-playlist li a", "click", function() {'.PHP_EOL;
-	$js .= 'var attributes = jQuery(this).attr("rel");'.PHP_EOL;
-	$js .= 'var attr = attributes.split("|");'.PHP_EOL;
-	//$js .= 'jQuery("#playjs-reset a").click();'.PHP_EOL;
-	$js .= 'if(attr[7] == "audio"){'.PHP_EOL;
-	$js .= 'jQuery("#playjs-creator").html(attr[0]);'.PHP_EOL;
-	$js .= 'jQuery("#playjs-album").html(attr[1]);'.PHP_EOL;
-	$js .= 'jQuery("#playjs-title").html(attr[2]);'.PHP_EOL;
-	$js .= 'jQuery("#playjs-annotation").html(attr[3]);'.PHP_EOL;
-	$js .= 'jQuery("#playjs-info").html(attr[4]);'.PHP_EOL;
-	$js .= 'jQuery("#playjs-duration").html(attr[5]);'.PHP_EOL;
-	$js .= 'jQuery("#playjs-image").html("<img src=\""+attr[6]+"\" alt=\"\" />");'.PHP_EOL;
-	$js .= 'jQuery("#playjs-player").html("<audio id=\"playjs-audio\" controls=\"controls\" width=\"'.$settings['width'].'\"><source src=\""+attr[8]+"\" type=\"audio/"+attr[8].split(".").pop()+"\" />Your browser does not support audio.</audio>");'.PHP_EOL;
-	$js .= 'jQuery("audio").mediaelementplayer({ success: function(player, node){} });'.PHP_EOL;
-	$js .= '} else if(attr[7] == "video") {'.PHP_EOL;
-	$js .= 'jQuery("#playjs-image").html("");'.PHP_EOL;
-	$js .= 'jQuery("#playjs-creator").html(attr[0]);'.PHP_EOL;
-	$js .= 'jQuery("#playjs-album").html(attr[1]);'.PHP_EOL;
-	$js .= 'jQuery("#playjs-title").html(attr[2]);'.PHP_EOL;
-	$js .= 'var out="<video width=\"'.$settings['width'].'\" height=\"'.$settings['height'].'\" poster=\""+attr[6]+"\" controls=\"controls\">";'.PHP_EOL;
-	$js .= 'var i = 8; while(attr[i]){'.PHP_EOL;
-		$js .= 'out += "<source src=\""+attr[i]+"\" type=\"video/"+attr[i].split(".").pop()+"\" />";'.PHP_EOL;
-	$js .= 'i++; }'.PHP_EOL;
-	$js .= 'out += "Your browser does not support the video tag.</video>";'.PHP_EOL;
-	$js .= 'jQuery("#playjs-player").html(out);'.PHP_EOL;
-	$js .= 'jQuery("video").mediaelementplayer({ success: function(player, node){} });'.PHP_EOL;
-	$js .= '}'.PHP_EOL;
-	$js .= '});'.PHP_EOL;
-	$js .= 'jQuery("#playjs-reset a").click(function() {'.PHP_EOL;
-	$js .= 'jQuery("[id^=playjs]").each(function(){'.PHP_EOL;
-	$js .= 'jQuery(this).html(jQuery(this).attr("rel"));'.PHP_EOL;
-	$js .= '});'.PHP_EOL;
-	$js .= '});'.PHP_EOL;
-	$js .= '});'.PHP_EOL;
-	echo $js;
-}
+
 #####################################
 /* 
  * generateXML
