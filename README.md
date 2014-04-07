@@ -16,3 +16,8 @@ This is a work in progress.
 ## Getting Involved
 
 Want to report a bug, request a feature, or help me build this project? The more the merrier!
+
+
+## License
+
+[MIT](http://opensource.org/licenses/MIT) © [Lacy Morrow](http://lacymorrow.com)
